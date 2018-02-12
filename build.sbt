@@ -3,7 +3,7 @@ import com.typesafe.sbt.packager.docker._
 
 name := """ImageClassifier"""
 
-version := "v21"
+version := "v26"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
@@ -16,6 +16,8 @@ libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2
 libraryDependencies += guice
 libraryDependencies += "com.google.cloud" % "google-cloud-storage" % "1.16.0"
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
+libraryDependencies += "com.google.cloud.sql"% "mysql-socket-factory" % "1.0.2"
+            
 dockerBaseImage := "test"
 
 

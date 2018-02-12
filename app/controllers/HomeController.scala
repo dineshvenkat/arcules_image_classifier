@@ -16,6 +16,7 @@ import play.api.mvc.MultipartFormData.FilePart
 import play.api.mvc._
 import play.core.parsers.Multipart.FileInfo
 import services.StorageService
+import services.MySQLHandler
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.sys.process.{Process, _}
@@ -26,9 +27,9 @@ import scala.util.Random
   * This controller handles user requests
   */
 @Singleton
-//class HomeController @Inject() (cc:MessagesControllerComponents,storage:StorageService,db:ScalaJdbcConnectSelect)
+class HomeController @Inject() (cc:MessagesControllerComponents,storage:StorageService,db:MySQLHandler)
 //class HomeController @Inject() (cc:MessagesControllerComponents,db:ScalaJdbcConnectSelect)
-class HomeController @Inject() (cc:MessagesControllerComponents,storage:StorageService)
+//class HomeController @Inject() (cc:MessagesControllerComponents,storage:StorageService)
 
   extends AbstractController(cc) {
 
@@ -48,9 +49,7 @@ class HomeController @Inject() (cc:MessagesControllerComponents,storage:StorageS
 
   def performClassification(serviceId:String,user:String,bucketName:String) :Future[String] =  {
 
-    logger.info(s"Perform image detection for user=${user},bucket=${bucketName} ")
-    val startTime = Calendar.getInstance().getTime().toString
-
+   
     def downLoadAndDetect(input:String) : Future[ImageResult]  = for {
       currFile <-  storage.downloadFile(bucketName,input)
       dayOrNight <- detectImage(currFile.getPath)
@@ -63,6 +62,10 @@ class HomeController @Inject() (cc:MessagesControllerComponents,storage:StorageS
       Future.sequence(in.map(file => downLoadAndDetect(file)))
     }
 
+     logger.info(s"Perform image detection for user=${user},bucket=${bucketName} ")
+     val startTime = Calendar.getInstance().getTime().toString
+     db.insertRecord(serviceId, startTime, "", "started", "")
+    
     val classifiedImgs = for {
       filesToProcess <- storage.getFileNames(bucketName)
       imgRes <- goOverFiles(filesToProcess)
@@ -73,8 +76,8 @@ class HomeController @Inject() (cc:MessagesControllerComponents,storage:StorageS
       endTime = Calendar.getInstance().getTime().toString
       userRes = UserResult(user,serviceId,bucketName,startTime,endTime,imageRes)
       inJson = Json.toJson(userRes)
-      //_ <- insertResults(user, startTime, endTime, "finished", inJson)
       inString = Json.stringify(inJson)
+      _ <- db.insertRecord(serviceId, startTime, endTime, "finished", inString)
       _ = logger.info(inString)
     } yield inString
 
