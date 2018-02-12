@@ -3,7 +3,7 @@ import com.typesafe.sbt.packager.docker._
 
 name := """ImageClassifier"""
 
-version := "v20"
+version := "v21"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
