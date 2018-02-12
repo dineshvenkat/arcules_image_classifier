@@ -5,6 +5,20 @@ import java.nio.file.{Files, Paths}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import javax.inject._
+import play.api._
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.libs.streams._
+import play.api.mvc.MultipartFormData.FilePart
+import play.api.mvc._
+import com.google.cloud.storage.Storage
+import com.google.cloud.storage.StorageOptions
+import com.google.cloud.storage.Blob
+import com.google.cloud.storage.BlobId
+import com.google.cloud.storage.Bucket
+import com.google.cloud.storage.BucketInfo
+import scala.collection.JavaConversions._
 
 @Singleton
 class StorageService {
