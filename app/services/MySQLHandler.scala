@@ -28,32 +28,18 @@ class MySQLHandler {
   import java.sql.Connection
   import java.sql.DriverManager
 
-  val instanceConnectionName = "reflected-night-194318:us-east1:dineshmysql"
-  val databaseName = "test"
-  val userName = "test"
-  val password = "test123"
+  val instanceConnectionName = sys.env.get("INST_NAME").getOrElse("reflected-night-194318:us-east1:dineshmysql")
+  val databaseName = sys.env.get("DB_NAME").getOrElse("test")
+  val userName = sys.env.get("U_NAME").getOrElse("test")
+  val password = sys.env.get("PASS").getOrElse("test123")
+  
 
   val jdbcUrl = String.format("jdbc:mysql://google/%s?cloudSqlInstance=%s&" + "socketFactory=com.google.cloud.sql.mysql.SocketFactory", databaseName, instanceConnectionName)
   private val logger = Logger(this.getClass)  
 
-  /*private val logger = Logger(this.getClass)
-  println("Before the connection")
-
-  val hostStr = "MYSQL_PORT_3306_TCP_ADDR"
-  val portStr = "MYSQL_PORT_3306_TCP_PORT"
-
-  val host = sys.env(hostStr)
-  val port = sys.env(portStr)
-  println(s"host=${host},port=${port}")
-  val url = s"jdbc:mysql://${host}:${port}/test"
-  //val url = "jdbc:mysql://:3306/test"
-  val driver = "com.mysql.jdbc.Driver"
-  val username = "root"
-  val password = "test123"
-  */
   
   val conn = DriverManager.getConnection(jdbcUrl, userName, password)
-  //var conn:Connection = _
+  
 
   val insertQuery = "insert into results (ServiceID, ServiceStartTime, ServiceEndTime, Status,Results)  values (?, ?, ?, ?, ?)"
 
@@ -65,7 +51,7 @@ class MySQLHandler {
     try {
       //Class.forName(driver)
       logger.info("Inside the function....")
-      //conn = DriverManager.getConnection(url, username, password)
+      
       var preparedStmt = conn.prepareStatement(insertQuery)
       preparedStmt.setString(1, id)
       preparedStmt.setString(2, sDate)

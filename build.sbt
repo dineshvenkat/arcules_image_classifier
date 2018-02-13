@@ -3,7 +3,7 @@ import com.typesafe.sbt.packager.docker._
 
 name := """ImageClassifier"""
 
-version := "v26"
+version := "v29"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
@@ -18,7 +18,7 @@ libraryDependencies += "com.google.cloud" % "google-cloud-storage" % "1.16.0"
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
 libraryDependencies += "com.google.cloud.sql"% "mysql-socket-factory" % "1.0.2"
             
-dockerBaseImage := "test"
+dockerBaseImage := "arcules_base"
 
 
 mappings in Universal ++= (baseDirectory.value / "scripts" * "*" get) map
