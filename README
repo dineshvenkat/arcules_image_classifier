@@ -1,0 +1,35 @@
+
+Prerequisite
+============ 
+	sbt version 13.5 or greater 
+	Docker client 
+
+Steps to build
+==============
+	git clone https://github.com/dineshvenkat/arcules_image_classifier.git
+	docker build -f conf/Dockerfile -t arcules_base . 
+	sbt docker:publishLocal
+	docker tag imageclassifier:v2 gcr.io/reflected-night-194318/imageclassify:v2
+	docker push gcr.io/reflected-night-194318/imageclassify:v2
+
+Setting up MySQL Server 
+======================= 
+	Create MySQL Second Generation instance in GCP
+	 To initialize DB - $PROJECT_BASE_DIR/scripts/mysql_init.sql 
+
+Deploying the Build 
+=================== 	
+	Deploy image gcr.io/reflected-night-194318/imageclassify:v2 to 
+		kubertnes engine or to a compute engine 
+
+	Make sure port tcp port 9000 is opened up in firewall 
+
+	Makesure following env is configured on the compute instance
+	------------------------------------------------------------
+	U_NAME - MySQL - user name 
+	PASS  - MySQL - password 
+	INST_NAME - MySQL - GCP instance name 
+	
+Test the deployment 
+=================== 
+	curl http://<externalip>:9000/classify/<userid>/dinesh_test	

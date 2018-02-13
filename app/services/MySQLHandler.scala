@@ -29,7 +29,7 @@ class MySQLHandler {
   import java.sql.DriverManager
 
   val instanceConnectionName = sys.env.get("INST_NAME").getOrElse("reflected-night-194318:us-east1:dineshmysql")
-  val databaseName = sys.env.get("DB_NAME").getOrElse("test")
+  val databaseName = "test"
   val userName = sys.env.get("U_NAME").getOrElse("test")
   val password = sys.env.get("PASS").getOrElse("test123")
   
